@@ -6,5 +6,5 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SpigotServers {
-    public List<YamlConfiguration> servers = new ArrayList<>();
+    public static List<SpigotServer> servers = new ArrayList<>();
 }
