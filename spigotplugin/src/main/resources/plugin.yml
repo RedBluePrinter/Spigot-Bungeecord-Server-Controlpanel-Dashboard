@@ -1,0 +1,4 @@
+name: SnpazConnector
+main: tk.snapz.spigot.Plugin
+version: 0.1
+author: RedBluePrinter

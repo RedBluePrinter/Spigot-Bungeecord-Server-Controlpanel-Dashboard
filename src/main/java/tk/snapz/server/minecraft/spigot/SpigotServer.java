@@ -6,7 +6,7 @@ public class SpigotServer {
     public String serverName = "SpigotServer";
     public String identifier = "Server UID Should be here...";
     public boolean isOnline() {
-        if((Instant.now().getEpochSecond() - lastResponse.getEpochSecond()) < 10) {
+        if((Instant.now().getEpochSecond() - lastResponse.getEpochSecond()) < 6) {
             return true;
         }
         return false;

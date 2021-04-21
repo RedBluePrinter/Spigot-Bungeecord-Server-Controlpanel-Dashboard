@@ -21,6 +21,7 @@ public class SnapzServerApplication {
     }
     public static void start(String[] args) {
         SimpleNettyServer.onMessage = SnapzServerApplication::handleMessage;
-        SimpleNettyServer.start(49886);
+        SimpleNettyServer.start(6079);
+        System.out.println("Server started!");
     }
 }

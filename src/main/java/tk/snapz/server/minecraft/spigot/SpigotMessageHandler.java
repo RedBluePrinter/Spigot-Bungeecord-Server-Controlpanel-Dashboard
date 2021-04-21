@@ -7,6 +7,7 @@ import java.time.Instant;
 
 public class SpigotMessageHandler {
     public static boolean handle(YamlConfiguration config) {
+        System.out.println(config.saveToString());
         for (SpigotServer server : SpigotServers.servers) {
             if (server.identifier.equals(config.getString("uid"))) {
                 server.lastResponse = Instant.now();
