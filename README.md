@@ -13,7 +13,7 @@ That means it is not finished yet and i first need to test some things!
         <br>
         Main Application [---]
         <br>
-        Discord Support [❌]
+        Discord Support [---]
         <br>
         Developer Tools [❌]
     </b>
