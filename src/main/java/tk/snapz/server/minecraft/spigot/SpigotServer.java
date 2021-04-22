@@ -11,5 +11,43 @@ public class SpigotServer {
         }
         return false;
     }
+    public boolean compare(SpigotServer server1, SpigotServer server2) {
+        if(server1.identifier.equals(server2.identifier)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    private boolean wasForcedTerminated = false;
+    private boolean wasAutoTerminated = false;
+    public boolean isTerminated() {
+        if(wasForcedTerminated) {
+            return true;
+        } else if((Instant.now().getEpochSecond() - lastResponse.getEpochSecond()) < 60) {
+            return false;
+        } else {
+
+            return true;
+        }
+    }
+    public void terminate() {
+        wasForcedTerminated = true;
+    }
+    public void terminateIfTimeoutIsOver60Seconds() {
+
+        wasForcedTerminated = true;
+    }
     public Instant lastResponse = Instant.now();
+    public boolean check() {
+        if (wasForcedTerminated) {
+            return false;
+        }
+        if (wasAutoTerminated) {
+            return false;
+        }
+        if (isTerminated()) {
+            return false;
+        }
+        return true;
+    }
 }
