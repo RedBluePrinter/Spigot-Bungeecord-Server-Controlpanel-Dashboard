@@ -19,9 +19,14 @@ public class SnapzServerApplication {
             }
         }
     }
+    private static boolean isRunning = false;
     public static void start(String[] args) {
-        SimpleNettyServer.onMessage = SnapzServerApplication::handleMessage;
-        SimpleNettyServer.start(6079);
-        System.out.println("Server started!");
+        System.out.println("hi");
+        if(!isRunning) {
+            SimpleNettyServer.onMessage = SnapzServerApplication::handleMessage;
+            SimpleNettyServer.start(8894);
+            System.out.println("Server started!");
+            isRunning = true;
+        }
     }
 }

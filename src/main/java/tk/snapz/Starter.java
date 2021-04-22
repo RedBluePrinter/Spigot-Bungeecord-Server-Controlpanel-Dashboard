@@ -20,7 +20,9 @@ public class Starter {
                 }
             }
         }).start();
-        SnapzServerApplication.start(args);
-        //SpringApplication.start(args);
+        Thread t = new Thread(() -> SnapzServerApplication.start(args));
+        t.start();
+        Thread s = new Thread(() -> SpringApplication.start(args));
+        s.start();
     }
 }
