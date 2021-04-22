@@ -3,7 +3,7 @@ package tk.snapz.web;
 import tk.snapz.util.ThreadSafeList;
 
 public class Testing {
-    public void main(String[] args) {
+    public static void main(String[] args) {
         final boolean[] doRun = {true};
         ThreadSafeList<String> threadSafeList = new ThreadSafeList<>();
         final int[] actions = {0};
