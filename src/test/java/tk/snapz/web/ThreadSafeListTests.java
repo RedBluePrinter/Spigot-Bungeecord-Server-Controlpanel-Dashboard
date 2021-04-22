@@ -2,14 +2,16 @@ package tk.snapz.web;
 
 import tk.snapz.util.ThreadSafeList;
 
-public class Testing {
+public class ThreadSafeListTests {
+    //I Love My ThreadSaveList <3.
+    //Tests of ThreadSaveList...
     public static void main(String[] args) {
         final boolean[] doRun = {true};
         ThreadSafeList<String> threadSafeList = new ThreadSafeList<>();
         final int[] actions = {0};
         new Thread(() -> {
             try {
-                Thread.sleep(180000);
+                Thread.sleep(60000);
             } catch (InterruptedException interruptedException) {
                 interruptedException.printStackTrace();
             }
@@ -24,7 +26,6 @@ public class Testing {
         new Thread(() -> {
             while (doRun[0]) {
                 threadSafeList.size();
-                System.out.println("Actions: " + actions[0]);
                 actions[0]++;
             }
         }).start();
@@ -39,5 +40,8 @@ public class Testing {
                 actions[0]++;
             }
         }).start();
+        while (doRun[0]) {
+            System.out.println("Actions: " + actions[0]);
+        }
     }
 }

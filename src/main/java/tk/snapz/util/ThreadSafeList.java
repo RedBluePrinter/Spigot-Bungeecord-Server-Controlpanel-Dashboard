@@ -21,7 +21,9 @@ public class ThreadSafeList<E> extends AbstractList<E> {
         int size = 0;
         try {
             size = elements.size();
-        } catch (Exception exception) {}
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
         doWait = false;
         return size;
     }
@@ -33,7 +35,9 @@ public class ThreadSafeList<E> extends AbstractList<E> {
         E element = null;
         try {
             element = elements.get(index);
-        } catch (Exception exception) {}
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
         doWait = false;
         return element;
     }
@@ -46,6 +50,7 @@ public class ThreadSafeList<E> extends AbstractList<E> {
         try {
             elements.add(e);
         } catch (Exception exception) {
+            exception.printStackTrace();
             cache = false;
         }
         doWait = false;
@@ -60,6 +65,7 @@ public class ThreadSafeList<E> extends AbstractList<E> {
         try {
             elements.set(index, element);
         } catch (Exception exception) {
+            exception.printStackTrace();
             e = null;
         }
         doWait = false;
@@ -72,7 +78,9 @@ public class ThreadSafeList<E> extends AbstractList<E> {
         doWait = true;
         try {
             elements.add(index, element);
-        } catch (Exception exception) {}
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
         doWait = false;
     }
 
@@ -83,7 +91,9 @@ public class ThreadSafeList<E> extends AbstractList<E> {
         E element = null;
         try {
             element = elements.remove(index);
-        } catch (Exception exception) {}
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
         doWait = false;
         return element;
     }
