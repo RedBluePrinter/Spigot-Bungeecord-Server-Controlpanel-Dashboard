@@ -24,6 +24,7 @@ public class Testing {
         new Thread(() -> {
             while (doRun[0]) {
                 threadSafeList.size();
+                System.out.println("Actions: " + actions);
                 actions[0]++;
             }
         }).start();
