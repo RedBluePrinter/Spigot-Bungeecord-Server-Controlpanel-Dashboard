@@ -1,5 +1,6 @@
 package tk.snapz.server.rest;
 
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import tk.snapz.server.minecraft.spigot.SpigotServer;
@@ -8,6 +9,7 @@ import tk.snapz.server.minecraft.spigot.SpigotServers;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+@ComponentScan
 @RestController
 public class ControlPanel {
 

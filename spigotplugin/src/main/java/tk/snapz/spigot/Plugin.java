@@ -52,7 +52,7 @@ public class Plugin extends JavaPlugin {
         //client.onReceived(System.out::println);
 
         try {
-            client.connect("localhost", 6079, 0);
+            client.connect("localhost", 8894, 0);
         } catch (InterruptedException interruptedException) {
             interruptedException.printStackTrace();
         }
