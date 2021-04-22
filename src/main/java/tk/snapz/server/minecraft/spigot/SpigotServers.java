@@ -1,10 +1,9 @@
 package tk.snapz.server.minecraft.spigot;
 
-import com.ericrabil.yamlconfiguration.configuration.file.YamlConfiguration;
+import tk.snapz.util.ThreadSafeList;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class SpigotServers {
-    public static List<SpigotServer> servers = new ArrayList<>();
+    public static ThreadSafeList<SpigotServer> servers = new ThreadSafeList<SpigotServer>();
 }
