@@ -47,6 +47,7 @@ public class Plugin extends JavaPlugin {
             }
         };
         YamlConfiguration yaml = template();
+        yaml.set("port", Bukkit.getPort());
         Client<String> client = new Client<>(stringSerializer);
         client.onConnected(() -> client.send(yaml.saveToString()));
         //client.onReceived(System.out::println);

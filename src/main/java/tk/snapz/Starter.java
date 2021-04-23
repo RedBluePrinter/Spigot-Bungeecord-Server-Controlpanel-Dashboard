@@ -5,8 +5,11 @@ import tk.snapz.server.minecraft.spigot.SpigotServer;
 import tk.snapz.server.minecraft.spigot.SpigotServers;
 import tk.snapz.web.SpringApplication;
 
+import java.io.File;
+
 public class Starter {
     public static void main(String[] args) {
+        DefaultDataStructure.checkAndCreate(new File(""));
         new Thread(() -> {
             while (true) {
                 //Debug Thread!
