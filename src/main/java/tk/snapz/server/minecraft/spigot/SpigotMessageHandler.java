@@ -18,6 +18,7 @@ public class SpigotMessageHandler {
         SpigotServer spigotServer = new SpigotServer();
         spigotServer.serverName = config.getString("sname");
         spigotServer.identifier = config.getString("uid");
+        spigotServer.setPort(spigotServer.identifier, config.getInt("port"));
         SpigotServers.servers.add(spigotServer);
 
         return true;

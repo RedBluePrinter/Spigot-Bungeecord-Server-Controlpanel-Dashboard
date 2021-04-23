@@ -6,7 +6,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
 import java.nio.charset.StandardCharsets;
 
 public class Plugin extends JavaPlugin {
