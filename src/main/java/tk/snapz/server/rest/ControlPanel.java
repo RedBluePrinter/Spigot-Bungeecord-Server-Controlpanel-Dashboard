@@ -32,15 +32,16 @@ public class ControlPanel {
     @RequestMapping(value = "/test")
     public Object testMapping () {
         HtmlBuilder builder = new HtmlBuilder();
-        builder.setBody(builder.newJSButton("alertbutton", "Button","alert(\"Hey\");"));
+        builder.addSleepFunction();
+        builder.setBody(builder.newJSButton("alertbutton", "Button","alert(\"Hey\");") + "<p id=\"tID\"></p>");
         builder.addLibrary(HtmlBuilder.JavascriptLibrary.JQuery);
         JavaScriptModule module = new JavaScriptModule("main");
         JavaScriptFunction function = new JavaScriptFunction("testRedirect");
         function.setAsync(true);
-        function.addStringAlert("HI");
-        function.addAjaxRequest("https://google.com", function.documentReWrite(function.ajaxResponse()));
+        function.addRepeatingTask(function.getAjaxRequest("/cp", "" + function.getChangeInnerHtml("tID", function.ajaxResponse())), 3000);
         module.addFunction(function);
         builder.addJavascriptModule(module);
+        builder.addJavascript("testRedirect();");
         return builder.build();
     }
 }

@@ -62,6 +62,11 @@ public class HtmlBuilder {
         this.addJavascript("function onClick" + name + "() {" + javascript + "}");
         return "<button onclick=\"onClick" + name + "();\">" + displayText + "</button>";
     }
+
+    public void addSleepFunction() {
+        addJavascript("function sleep(n) { return new Promise(resolve=>setTimeout(resolve,n)); }");
+    }
+
     public enum JavascriptLibrary {
         JQuery
     }

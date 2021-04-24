@@ -6,6 +6,7 @@ public class JavaScriptFunction {
     public ThreadSafeList<String> jsfLines = null;
     public String name = "jsFun";
     public JavaScriptFunction(String name) {
+        this.name = name;
         jsfLines = new ThreadSafeList<>();
     }
 
@@ -26,6 +27,27 @@ public class JavaScriptFunction {
 
     public void addAjaxRequest(String url, String onSuccess) {
         jsfLines.add("$.ajax({ url: \"" + url + "\"}).done(function(response) {" + onSuccess + "});\n");
+    }
+
+    public String getAjaxRequest(String url, String onSuccess) {
+        return "$.ajax({ url: \"" + url + "\"}).done(function(response) {" + onSuccess + "});\n";
+    }
+
+    public void changeInnerHtml(String id, String content) {
+        String display = "var display = document.getElementById('" + id + "'); display.innerHTML = " + content + ";\n";
+        jsfLines.add(display);
+    }
+
+    public String getChangeInnerHtml(String id, String content) {
+        return "var display = document.getElementById('" + id + "'); display.innerHTML = " + content + ";\n";
+    }
+
+    public void addRepeatingTask(String function, int delay) {
+        jsfLines.add("while(true) {" + function + "await sleep(" + delay + ");}\n");
+    }
+
+    public String getRepeatingTask(String function, int delay) {
+        return "while(true) {" + function + "await sleep(" + delay + ");}\n";
     }
 
     public String documentReWrite(String content) {
