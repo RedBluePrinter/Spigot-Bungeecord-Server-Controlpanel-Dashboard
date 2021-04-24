@@ -24,7 +24,7 @@ public class ControlPanel {
             if(spigotServer.isOnline()) {
                 status = "Online";
             }
-            sb.append(spigotServer.serverName + " | Port: " + spigotServer.getPort() + " | Status: " + status);
+            sb.append(spigotServer.serverName + " | Port: " + spigotServer.getPort() + " | Status: " + status + "<br>");
         }
         return sb.toString();
     }
