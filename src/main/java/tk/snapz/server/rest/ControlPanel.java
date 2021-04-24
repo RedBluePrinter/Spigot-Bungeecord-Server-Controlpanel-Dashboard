@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import tk.snapz.server.minecraft.spigot.SpigotServer;
 import tk.snapz.server.minecraft.spigot.SpigotServers;
+import tk.snapz.util.htmlutils.HtmlBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,5 +25,12 @@ public class ControlPanel {
             sb.append(spigotServer.serverName + " | Port: " + spigotServer.getPort() + " | Status: " + status);
         }
         return sb.toString();
+    }
+
+    @RequestMapping(value = "/test")
+    public Object testMapping () {
+        HtmlBuilder builder = new HtmlBuilder();
+        builder.setBody(builder.newJSButton("alertbutton", "Button","alert(\"Hey\");"));
+        return builder.build();
     }
 }
