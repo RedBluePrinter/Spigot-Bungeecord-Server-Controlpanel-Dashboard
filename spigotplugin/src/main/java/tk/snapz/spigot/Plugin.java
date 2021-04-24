@@ -3,6 +3,8 @@ package tk.snapz.spigot;
 import hu.trigary.simplenetty.client.Client;
 import hu.trigary.simplenetty.serialization.DataSerializer;
 import org.bukkit.Bukkit;
+import org.bukkit.Server;
+import org.bukkit.World;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -58,7 +60,24 @@ public class Plugin extends JavaPlugin {
                 e.printStackTrace();
             }
             if(command.getString("cmd").equals("stop")) {
-                Bukkit.getServer().shutdown();
+                System.out.println("Shutdown Executed remotely!");
+//                System.out.println("Saving Players...");
+                Server server = Bukkit.getServer();
+//                server.savePlayers();
+//                System.out.println("Saving Worlds...");
+//                for (World world : server.getWorlds()) {
+//                    world.save();
+//                    server.unloadWorld(world, true);
+//                }
+//                System.out.println("Saved!");
+//                System.out.println("Disabling Plugins...");
+//                for(org.bukkit.plugin.Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
+//                    System.out.println("Disabling " + plugin.getName() + "...");
+//                    plugin.onDisable();
+//                    System.out.println("Disabled " + plugin.getName() + "!");
+//                }
+                System.out.println("Shutting Down...");
+                server.shutdown();
             }
         });
 
