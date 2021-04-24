@@ -58,10 +58,19 @@ public class HtmlBuilder {
         this.styles.add(style);
     }
     public String newJSButton(String name, String displayText,String javascript) {
+        jsBtnNum++;
         name = name.replace(" ", "").trim();
-        this.addJavascript("function onClick" + name + "() {" + javascript + "}");
-        return "<button onclick=\"onClick" + name + "();\">" + displayText + "</button>";
+        this.addJavascript("function onClick" + jsBtnNum + name + "() {" + javascript + "}");
+        return "<button onclick=\"onClick" + jsBtnNum + name + "();\">" + displayText + "</button>";
     }
+
+    public String getJSButton(String name, String displayText, String javascript) {
+        jsBtnNum++;
+        name = name.replace(" ", "").trim();
+        return "<button onclick='" + javascript + "'>" + displayText + "</button>";
+    }
+
+    int jsBtnNum = 0;
 
     public void addSleepFunction() {
         addJavascript("function sleep(n) { return new Promise(resolve=>setTimeout(resolve,n)); }");

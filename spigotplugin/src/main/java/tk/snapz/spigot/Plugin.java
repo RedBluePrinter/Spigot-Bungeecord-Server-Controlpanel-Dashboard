@@ -3,6 +3,7 @@ package tk.snapz.spigot;
 import hu.trigary.simplenetty.client.Client;
 import hu.trigary.simplenetty.serialization.DataSerializer;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -49,7 +50,17 @@ public class Plugin extends JavaPlugin {
         yaml.set("port", Bukkit.getPort());
         Client<String> client = new Client<>(stringSerializer);
         client.onConnected(() -> client.send(yaml.saveToString()));
-        //client.onReceived(System.out::println);
+        client.onReceived((message) -> {
+            YamlConfiguration command = new YamlConfiguration();
+            try {
+                command.loadFromString(message);
+            } catch (InvalidConfigurationException e) {
+                e.printStackTrace();
+            }
+            if(command.getString("cmd").equals("stop")) {
+                Bukkit.getServer().shutdown();
+            }
+        });
 
         try {
             client.connect("localhost", 8894, 0);

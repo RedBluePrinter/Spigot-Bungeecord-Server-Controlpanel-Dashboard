@@ -1,15 +1,18 @@
 package tk.snapz.server.minecraft.spigot;
 
 import com.ericrabil.yamlconfiguration.configuration.file.YamlConfiguration;
+import hu.trigary.simplenetty.client.Client;
 import hu.trigary.simplenetty.server.Server;
+import hu.trigary.simplenetty.server.ServerClient;
 
 import java.time.Instant;
 
 public class SpigotMessageHandler {
-    public static boolean handle(YamlConfiguration config) {
+    public static boolean handle(ServerClient<String> client, YamlConfiguration config) {
         System.out.println(config.saveToString());
         for (SpigotServer server : SpigotServers.servers) {
             if (server.identifier.equals(config.getString("uid"))) {
+                server.client = client;
                 server.lastResponse = Instant.now();
                 return true;
             }

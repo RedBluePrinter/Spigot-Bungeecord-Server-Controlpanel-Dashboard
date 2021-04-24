@@ -1,7 +1,9 @@
 package tk.snapz.server.rest;
 
+import com.ericrabil.yamlconfiguration.configuration.file.YamlConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import tk.snapz.server.minecraft.spigot.SpigotServer;
 import tk.snapz.server.minecraft.spigot.SpigotServers;
@@ -18,15 +20,34 @@ public class ControlPanel {
 
     @RequestMapping(value = "/cp")
     public Object controlpanelRM(HttpServletRequest request, HttpServletResponse response) {
+        HtmlBuilder builder = new HtmlBuilder();
         StringBuilder sb = new StringBuilder();
+        JavaScriptModule module = new JavaScriptModule("sub");
+        JavaScriptFunction function = new JavaScriptFunction("btnFun");
+        function.setAsync(true);
         for (SpigotServer spigotServer : SpigotServers.servers) {
             String status = "Offline";
             if(spigotServer.isOnline()) {
                 status = "Online";
             }
-            sb.append(spigotServer.serverName + " | Port: " + spigotServer.getPort() + " | Status: " + status + "<br>");
+            sb.append(spigotServer.serverName + " | Port: " + spigotServer.getPort() + " | Status: " + status + builder.getJSButton("stopserver", "Stop Server", function.getAjaxRequest("/stopserver?id=" + spigotServer.identifier, "")) +"<br>");
         }
-        return sb.toString();
+        builder.setBody(sb.toString());
+        module.addFunction(function);
+        return builder.build();
+    }
+
+    @RequestMapping(value = "/stopserver")
+    public Object serverStop(HttpServletRequest request, HttpServletResponse response, @RequestParam String id) {
+        for (SpigotServer spigotServer : SpigotServers.servers) {
+            if(spigotServer.identifier.equals(id)) {
+                YamlConfiguration command = new YamlConfiguration();
+                command.set("cmd", "stop");
+                spigotServer.client.send(command.saveToString());
+                return null;
+            }
+        }
+        return null;
     }
 
     @RequestMapping(value = "/test")

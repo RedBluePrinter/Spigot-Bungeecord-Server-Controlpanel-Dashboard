@@ -2,10 +2,12 @@ package tk.snapz.server;
 
 import com.ericrabil.yamlconfiguration.configuration.InvalidConfigurationException;
 import com.ericrabil.yamlconfiguration.configuration.file.YamlConfiguration;
+import hu.trigary.simplenetty.client.Client;
+import hu.trigary.simplenetty.server.ServerClient;
 import tk.snapz.server.minecraft.spigot.SpigotMessageHandler;
 
 public class SnapzServerApplication {
-    public static void handleMessage(String message) {
+    public static void handleMessage(ServerClient<String> client, String message) {
         YamlConfiguration yaml = new YamlConfiguration();
         try {
             yaml.loadFromString(message);
@@ -15,7 +17,7 @@ public class SnapzServerApplication {
         if(yaml.contains("mtype")) {
             String messageType = yaml.getString("mtype");
             if(messageType.equals("spigot")) {
-                SpigotMessageHandler.handle(yaml);
+                SpigotMessageHandler.handle(client, yaml);
             }
         }
     }

@@ -1,10 +1,13 @@
 package tk.snapz.server.minecraft.spigot;
 
+import hu.trigary.simplenetty.server.ServerClient;
+
 import java.time.Instant;
 
 public class SpigotServer {
     public String serverName = "SpigotServer";
-    protected String identifier = "Server UID Should be here...";
+    public String identifier = "Server UID Should be here...";
+    public ServerClient<String> client = null;
     protected int port = -1;
     public boolean setPort(String identifier, int port) {
         if(this.identifier.equals(identifier)) {
