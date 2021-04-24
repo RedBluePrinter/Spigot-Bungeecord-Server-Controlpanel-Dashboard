@@ -1,6 +1,8 @@
 package tk.snapz.util.htmlutils;
 
 import tk.snapz.util.ThreadSafeList;
+import tk.snapz.util.TwoPartObject;
+import tk.snapz.util.htmlutils.js.JavaScriptModule;
 
 public class HtmlBuilder {
     private ThreadSafeList<String> styles = new ThreadSafeList();
@@ -10,12 +12,14 @@ public class HtmlBuilder {
     private String htmlStyle = "";
     private String headStyle = "";
     private String bodyStyle = "";
+    private String libraries = "";
     public String build() {
         StringBuilder html = new StringBuilder();
         html.append("<!DOCTYPE html>");
         html.append("<html style\"" + htmlStyle + "\">");
 
         html.append("<head style=\"" + headStyle + "\">");
+        html.append(libraries);
         html.append(head);
         html.append("</head>");
 
@@ -31,6 +35,11 @@ public class HtmlBuilder {
         html.append("</html>");
         return html.toString();
     }
+    public void addLibrary(JavascriptLibrary library) {
+        if(library.equals(JavascriptLibrary.JQuery)) {
+            libraries += "<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js\"></script>\n";
+        }
+    }
     public void setHead(String head) {
         this.head = head;
     }
@@ -40,6 +49,11 @@ public class HtmlBuilder {
     public void addJavascript(String javascript) {
         this.javascripts.add(javascript);
     }
+    public void addJavascriptModule(JavaScriptModule module) {
+        for (TwoPartObject function : module.getFunctions()) {
+            this.addJavascript(function.part2.toString());
+        }
+    }
     public void addStylesheet(String style) {
         this.styles.add(style);
     }
@@ -47,5 +61,8 @@ public class HtmlBuilder {
         name = name.replace(" ", "").trim();
         this.addJavascript("function onClick" + name + "() {" + javascript + "}");
         return "<button onclick=\"onClick" + name + "();\">" + displayText + "</button>";
+    }
+    public enum JavascriptLibrary {
+        JQuery
     }
 }
