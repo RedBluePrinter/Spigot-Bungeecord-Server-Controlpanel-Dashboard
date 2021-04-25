@@ -32,6 +32,9 @@ public class ControlPanel {
 
     @RequestMapping(value = "/srvl")
     public Object controlpanelRM(HttpServletRequest request, HttpServletResponse response, @Nullable @CookieValue String token, @Nullable @CookieValue String debug ) {
+        if (token == null || !sessionTokens.contains(token)) {
+            return "<p>Invalid Token! Please refresh the page.";
+        }
         HtmlBuilder builder = new HtmlBuilder();
         StringBuilder sb = new StringBuilder();
         JavaScriptModule module = new JavaScriptModule("sub");
@@ -109,7 +112,7 @@ public class ControlPanel {
                     "}).done(function(response) {\n" +
                     "            let stateObj = { id: \"100\" };\n" +
                     "            window.history.replaceState(stateObj,\n" +
-                    "                        \"Control Panel\", \"/cp\");\n" +
+                    "                        \"Control Panel\", \"/cp/\");\n" +
                     "document.open();\n" +
                     "document.write(response);\n" +
                     "document.close();\n" +
@@ -125,6 +128,20 @@ public class ControlPanel {
     @RequestMapping(value = "/rqtok")
     public Object requestToken(HttpServletResponse response, @Nullable @RequestParam String username, @Nullable @RequestParam String password, @Nullable @CookieValue String token) {
         System.out.println("TOKEN!");
+        {
+            Cookie cookie = new Cookie("username", null);
+            cookie.setPath("/");
+            cookie.setHttpOnly(true);
+            cookie.setMaxAge(0);
+            response.addCookie(cookie);
+        }
+        {
+            Cookie cookie = new Cookie("password", null);
+            cookie.setPath("/");
+            cookie.setHttpOnly(true);
+            cookie.setMaxAge(0);
+            response.addCookie(cookie);
+        }
         if(username != null) {
             {
                 Cookie cookie = new Cookie("username", null);
@@ -158,7 +175,10 @@ public class ControlPanel {
     }
 
     @RequestMapping(value = "/stopserver")
-    public Object serverStop(HttpServletRequest request, HttpServletResponse response, @RequestParam String id) {
+    public Object serverStop(HttpServletRequest request, HttpServletResponse response, @RequestParam String id, @Nullable @CookieValue String token) {
+        if (token == null || !sessionTokens.contains(token)) {
+            return null;
+        }
         for (SpigotServer spigotServer : SpigotServers.servers) {
             if(spigotServer.identifier.equals(id)) {
                 YamlConfiguration command = new YamlConfiguration();
@@ -171,7 +191,10 @@ public class ControlPanel {
     }
 
     @RequestMapping(value = "/reloadserver")
-    public Object serverReload(HttpServletRequest request, HttpServletResponse response, @RequestParam String id) {
+    public Object serverReload(HttpServletRequest request, HttpServletResponse response, @RequestParam String id, @Nullable @CookieValue String token) {
+        if (token == null || !sessionTokens.contains(token)) {
+            return null;
+        }
         for (SpigotServer spigotServer : SpigotServers.servers) {
             if(spigotServer.identifier.equals(id)) {
                 YamlConfiguration command = new YamlConfiguration();
@@ -184,7 +207,24 @@ public class ControlPanel {
     }
 
     @RequestMapping(value = "/cp/")
-    public Object testMapping () {
+    public Object testMapping (HttpServletRequest request, HttpServletResponse response, @Nullable @CookieValue String token) {
+        if (token == null || !sessionTokens.contains(token)) {
+            return new RedirectView("/cp/auth/login/");
+        }
+        {
+            Cookie cookie = new Cookie("username", null);
+            cookie.setPath("/");
+            cookie.setHttpOnly(true);
+            cookie.setMaxAge(0);
+            response.addCookie(cookie);
+        }
+        {
+            Cookie cookie = new Cookie("password", null);
+            cookie.setPath("/");
+            cookie.setHttpOnly(true);
+            cookie.setMaxAge(0);
+            response.addCookie(cookie);
+        }
         HtmlBuilder builder = new HtmlBuilder();
         builder.addSleepFunction();
         //builder.setBody(builder.newJSButton("alertbutton", "Button","alert(\"Hey\");") +
