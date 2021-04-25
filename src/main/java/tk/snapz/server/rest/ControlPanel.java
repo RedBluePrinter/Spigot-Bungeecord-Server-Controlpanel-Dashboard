@@ -31,7 +31,7 @@ import java.util.Random;
 public class ControlPanel {
 
     @RequestMapping(value = "/srvl")
-    public Object controlpanelRM(HttpServletRequest request, HttpServletResponse response, @Nullable @CookieValue String token, @Nullable @CookieValue String debug ) {
+    public Object controlpanelRM(HttpServletRequest request, HttpServletResponse response, @Nullable @CookieValue String token, @Nullable @CookieValue String debug) {
         if (token == null || !sessionTokens.contains(token)) {
             return "<p>Invalid Token! Please refresh the page.";
         }

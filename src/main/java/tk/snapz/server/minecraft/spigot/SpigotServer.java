@@ -1,6 +1,8 @@
 package tk.snapz.server.minecraft.spigot;
 
 import hu.trigary.simplenetty.server.ServerClient;
+import tk.snapz.util.ThreadSafeList;
+import tk.snapz.util.TwoPartObject;
 
 import java.time.Instant;
 
@@ -8,7 +10,13 @@ public class SpigotServer {
     public String serverName = "SpigotServer";
     public String identifier = "Server UID Should be here...";
     public ServerClient<String> client = null;
+    public ThreadSafeList<TwoPartObject.TwoPartString> plugins = null;
     protected int port = -1;
+
+    SpigotServer() {
+        plugins = new ThreadSafeList<>();
+    }
+
     public boolean setPort(String identifier, int port) {
         if(this.identifier.equals(identifier)) {
             this.port = port;

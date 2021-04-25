@@ -69,10 +69,12 @@ public class Plugin extends JavaPlugin {
 
         createClient();
 
-        YamlConfiguration yaml = template();
-        yaml.set("port", Bukkit.getPort());
-
-        client.onConnected(() -> client.send(yaml.saveToString()));
+        client.onConnected(() -> {
+            YamlConfiguration initChannel = template();
+            initChannel.set("token", ServerToken.serverToken);
+            initChannel.set("port", Bukkit.getPort());
+            client.send(initChannel.saveToString());
+        });
 
         client.onDisconnected(this::checkAndConnect);
 
@@ -87,7 +89,7 @@ public class Plugin extends JavaPlugin {
 
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
             try {
-                client.send(yaml.saveToString());
+                client.send(template().saveToString());
             } catch (Exception throwable) {
                 checkAndConnect();
             }
