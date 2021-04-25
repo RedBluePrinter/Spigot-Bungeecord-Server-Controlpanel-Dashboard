@@ -18,6 +18,8 @@ OLD:
 
 <html>
     <b>
+        ------------------------
+        <br>
         Creating Project [✔]
         <br>
         Create Repository [✔]
@@ -27,9 +29,11 @@ OLD:
         Discord Support [---]
         <br>
         Developer Tools [❌]
+        <br
+        ------------------------
+        <br>
     </b>
 </html>
-
 
 Known Bugs:
 
