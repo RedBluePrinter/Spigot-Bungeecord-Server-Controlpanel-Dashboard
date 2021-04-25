@@ -50,3 +50,11 @@ Known Bugs:
 Pausing this Project for a week (start of next month)
 
 ![grafik](https://user-images.githubusercontent.com/82869044/115999618-ba378e00-a5ec-11eb-9999-cac0357a2211.png)
+
+
+
+<p id="tID"><style></style>Unknown Server | Port: 25565 | Status: Online<button class="rby" onclick="$.ajax({ url: &quot;/reloadserver?id=9258--25565&quot;}).done(function(response) {});
+">Reload Server</button><button class="sbr" onclick="$.ajax({ url: &quot;/stopserver?id=9258--25565&quot;}).done(function(response) {});
+">Stop Server</button><br>Unknown Server | Port: 25566 | Status: Online<button class="rby" onclick="$.ajax({ url: &quot;/reloadserver?id=1344--25566&quot;}).done(function(response) {});
+">Reload Server</button><button class="sbr" onclick="$.ajax({ url: &quot;/stopserver?id=1344--25566&quot;}).done(function(response) {});
+">Stop Server</button><br></p>
