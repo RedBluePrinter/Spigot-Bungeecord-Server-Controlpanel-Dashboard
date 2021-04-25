@@ -31,9 +31,9 @@ OLD:
         Developer Tools [❌]
         <br
         ------------------------
+        <br>
     </b>
 </html>
-<br>
 
 Known Bugs:
 
