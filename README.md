@@ -47,3 +47,6 @@ Known Bugs:
 
 
 
+Pausing this Project for a week (start of next month)
+
+![grafik](https://user-images.githubusercontent.com/82869044/115999618-ba378e00-a5ec-11eb-9999-cac0357a2211.png)
