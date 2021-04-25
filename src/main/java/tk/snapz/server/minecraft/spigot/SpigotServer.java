@@ -88,4 +88,6 @@ public class SpigotServer {
         }
         return true;
     }
+
+    public int packetsSent = 0;
 }

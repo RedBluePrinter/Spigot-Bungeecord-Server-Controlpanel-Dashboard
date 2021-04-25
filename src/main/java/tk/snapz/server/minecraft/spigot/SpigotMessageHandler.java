@@ -14,6 +14,7 @@ public class SpigotMessageHandler {
             if (server.identifier.equals(config.getString("uid"))) {
                 server.client = client;
                 server.lastResponse = Instant.now();
+                server.packetsSent++;
                 return true;
             }
         }
@@ -22,6 +23,7 @@ public class SpigotMessageHandler {
         spigotServer.serverName = config.getString("sname");
         spigotServer.identifier = config.getString("uid");
         spigotServer.setPort(spigotServer.identifier, config.getInt("port"));
+        spigotServer.packetsSent = 1;
         SpigotServers.servers.add(spigotServer);
 
         return true;

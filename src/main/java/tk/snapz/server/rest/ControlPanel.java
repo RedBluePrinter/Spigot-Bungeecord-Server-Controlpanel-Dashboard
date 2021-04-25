@@ -1,8 +1,10 @@
 package tk.snapz.server.rest;
 
 import com.ericrabil.yamlconfiguration.configuration.file.YamlConfiguration;
+import hu.trigary.simplenetty.serialization.PacketDecoder;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.http.MediaType;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.RedirectView;
 import tk.snapz.server.minecraft.spigot.SpigotServer;
 import tk.snapz.server.minecraft.spigot.SpigotServers;
+import tk.snapz.usermanager.User;
+import tk.snapz.usermanager.Users;
 import tk.snapz.util.ThreadSafeList;
 import tk.snapz.util.htmlutils.HtmlBuilder;
 import tk.snapz.util.htmlutils.js.JavaScriptFunction;
@@ -19,6 +23,7 @@ import tk.snapz.util.htmlutils.js.JavaScriptModule;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Base64;
 import java.util.Random;
 
 @ComponentScan
@@ -26,7 +31,7 @@ import java.util.Random;
 public class ControlPanel {
 
     @RequestMapping(value = "/srvl")
-    public Object controlpanelRM(HttpServletRequest request, HttpServletResponse response, @Nullable @CookieValue String token) {
+    public Object controlpanelRM(HttpServletRequest request, HttpServletResponse response, @Nullable @CookieValue String token, @Nullable @CookieValue String debug ) {
         HtmlBuilder builder = new HtmlBuilder();
         StringBuilder sb = new StringBuilder();
         JavaScriptModule module = new JavaScriptModule("sub");
@@ -39,7 +44,26 @@ public class ControlPanel {
                 if (spigotServer.isOnline()) {
                     status = "Online";
                 }
-                sb.append(spigotServer.serverName + " | Port: " + spigotServer.getPort() + " | Status: " + status + builder.getJSButton("rby", "reloadserver", "Reload Server", function.getAjaxRequest("/reloadserver?id=" + spigotServer.identifier, "")) + builder.getJSButton("sbr", "stopserver", "Stop Server", function.getAjaxRequest("/stopserver?id=" + spigotServer.identifier, "")) + "<br>");
+
+                StringBuilder debugBuilder = new StringBuilder();
+                if(debug != null) {
+                    if (debug.equals("true")) {
+                        debugBuilder.append("     Packets sent:");
+                        debugBuilder.append(spigotServer.packetsSent);
+                    }
+                }
+
+                sb.append(spigotServer.serverName
+                        + " | Port: "
+                        + spigotServer.getPort()
+                        + " | Status: " + status
+                        + builder.getJSButton(
+                                "rby", "reloadserver", "Reload Server", function.getAjaxRequest("/reloadserver?id=" + spigotServer.identifier, ""))
+                        + builder.getJSButton(
+                                "sbr", "stopserver", "Stop Server", function.getAjaxRequest("/stopserver?id=" + spigotServer.identifier, ""))
+                        + debugBuilder.toString()
+                        + "<br>"
+                );
             }
         }
         builder.setBody(sb.toString());
@@ -49,23 +73,88 @@ public class ControlPanel {
 
     public static ThreadSafeList<String> sessionTokens = new ThreadSafeList<>();
 
-    @RequestMapping(value = "/rqtok")
-    public Object requestToken(HttpServletResponse response, @Nullable @CookieValue String token, @Nullable @RequestParam String t) {
-        if(t == null) {
-            Cookie cookie = new Cookie("user", null); // Not necessary, but saves bandwidth.
-            cookie.setPath("/MyApplication");
-            cookie.setHttpOnly(true);
-            cookie.setMaxAge(0); // Don't set to -1 or it will become a session cookie!
-            response.addCookie(cookie);
-            return new RedirectView("/rqtok?t=rqtl");
+    @RequestMapping(value = "/cp/auth/login/")
+    public Object login(HttpServletRequest request, HttpServletResponse response, @Nullable @RequestParam String username, @Nullable @RequestParam String password) {
+        if (username != null && password != null) {
+            Cookie uCookie = new Cookie("username", username);
+            uCookie.setMaxAge(30);
+            response.addCookie(uCookie);
+            Cookie pCookie = new Cookie("password", password);
+            pCookie.setMaxAge(30);
+            response.addCookie(pCookie);
+            return new RedirectView("/rqtok?username=" + username + "&password=" + password);
         } else {
-            String newToken = RandomStringUtils.random(128, true, true);
-            sessionTokens.add("TK-" + newToken + "-");
-            Cookie cookie = new Cookie("token", newToken);
-            cookie.setMaxAge(300);
-            response.addCookie(cookie);
-            return new RedirectView("/cp/");
+            HtmlBuilder builder = new HtmlBuilder();
+            builder.addLibrary(HtmlBuilder.JavascriptLibrary.JQuery);
+            builder.setBody("            <form action=\"javascript: login()\">\n" +
+                    "                <input name=\"type\" type=\"hidden\" value=\"login\"/>\n" +
+                    "                <p>Email</p>\n" +
+                    "                <input name=\"username\" type=\"text\" class=\"field\">\n" +
+                    "                <br>\n" +
+                    "                <p>Password</p>\n" +
+                    "                <input name=\"password\" type=\"password\" class=\"field\">\n" +
+                    "                <br>\n" +
+                    "                <input name=\"Login\" type=\"submit\" value=\"Login\" class=\"button\">\n" +
+                    "            </form>");
+            builder.addJavascript("async function login() {\n" +
+                    "            var username = \"\";\n" +
+                    "            var password = \"\";\n" +
+                    "            var x = $(\"form\").serializeArray();\n" +
+                    "                            $.each(x, function(i, field) {\n" +
+                    "                                if(field.name == \"username\") username = field.value;\n" +
+                    "                                if(field.name == \"password\") password = field.value;\n" +
+                    "                });\n" +
+                    "            $.ajax({\n" +
+                    "  url:  \"/cp/auth/login/?&username=\" + username + \"&password=\" + password\n" +
+                    "}).done(function(response) {\n" +
+                    "            let stateObj = { id: \"100\" };\n" +
+                    "            window.history.replaceState(stateObj,\n" +
+                    "                        \"Control Panel\", \"/cp\");\n" +
+                    "document.open();\n" +
+                    "document.write(response);\n" +
+                    "document.close();\n" +
+                    "});\n" +
+                    "        } ");
+//            JavaScriptModule module = new JavaScriptModule("main");
+//            JavaScriptFunction function = new JavaScriptFunction("rqtok");
+//            builder.addJavascriptModule();
+            return builder.build();
         }
+    }
+
+    @RequestMapping(value = "/rqtok")
+    public Object requestToken(HttpServletResponse response, @Nullable @RequestParam String username, @Nullable @RequestParam String password, @Nullable @CookieValue String token) {
+        System.out.println("TOKEN!");
+        if(username != null) {
+            {
+                Cookie cookie = new Cookie("username", null);
+                cookie.setPath("/");
+                cookie.setHttpOnly(true);
+                cookie.setMaxAge(0);
+                response.addCookie(cookie);
+            }
+            {
+                Cookie cookie = new Cookie("password", null);
+                cookie.setPath("/");
+                cookie.setHttpOnly(true);
+                cookie.setMaxAge(0);
+                response.addCookie(cookie);
+            }
+            if(Users.isUserRegistered(username)) {
+                User user = Users.getUser(username);
+                System.out.println(user.username);
+                System.out.println(new String(Base64.getDecoder().decode(user.base64Password)));
+                if(password.equals(new String(Base64.getDecoder().decode(user.base64Password)))) {
+                    String newToken = RandomStringUtils.random(128, true, true);
+                    sessionTokens.add("TK-" + newToken + "-300");
+                    Cookie cookie = new Cookie("token", "TK-" + newToken + "-300");
+                    cookie.setMaxAge(-1);
+                    response.addCookie(cookie);
+                    return new RedirectView("/cp/");
+                }
+            }
+        }
+        return new RedirectView("/cp/auth/login/");
     }
 
     @RequestMapping(value = "/stopserver")
@@ -245,5 +334,40 @@ public class ControlPanel {
         builder.addJavascriptModule(module);
         builder.addJavascript("testRedirect();");
         return builder.build();
+    }
+
+    @RequestMapping(value = "/cp/conf/user/debug")
+    public Object debug(HttpServletRequest request, HttpServletResponse response, @Nullable @CookieValue String token, @Nullable @CookieValue String debug) {
+        System.out.println(token);
+        for (String tok : sessionTokens) {
+            System.out.println(tok);
+        }
+        if(token != null) {
+            if(sessionTokens.contains(token)) {
+                {
+                    Cookie cookie = new Cookie("debug", null);
+                    cookie.setPath("/");
+                    cookie.setHttpOnly(true);
+                    cookie.setMaxAge(0);
+                    response.addCookie(cookie);
+                }
+                {
+                    if(debug != null) {
+                        if(debug.equals("true")) {
+                            Cookie cookie = new Cookie("debug", "false");
+                            response.addCookie(cookie);
+                        } else {
+                            Cookie cookie = new Cookie("debug", "true");
+                            response.addCookie(cookie);
+                        }
+                    } else {
+                        Cookie cookie = new Cookie("debug", "true");
+                        response.addCookie(cookie);
+                    }
+                    return "Toggled Debug mode!";
+                }
+            }
+        }
+        return "Invalid Token!";
     }
 }
