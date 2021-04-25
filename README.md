@@ -29,3 +29,11 @@ OLD:
         Developer Tools [❌]
     </b>
 </html>
+
+Known Bugs:
+
+- Server Duplicates
+
+![grafik](https://user-images.githubusercontent.com/82869044/115992442-13dc9000-a5ce-11eb-9d48-d5f677fbc431.png)
+
+
