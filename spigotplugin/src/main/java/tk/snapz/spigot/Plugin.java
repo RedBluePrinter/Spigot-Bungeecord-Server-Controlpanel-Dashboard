@@ -52,12 +52,31 @@ public class Plugin extends JavaPlugin {
         yaml.set("port", Bukkit.getPort());
         Client<String> client = new Client<>(stringSerializer);
         client.onConnected(() -> client.send(yaml.saveToString()));
+        client.onDisconnected(() -> {
+            try {
+                client.connect("localhost", 8894, 0);
+            } catch (InterruptedException interruptedException) {
+
+            }
+        });
+        client.onException((ex)-> {
+            try {
+                client.disconnect();
+                client.connect("localhost", 8894, 0);
+            } catch (InterruptedException interruptedException) {}
+        });
         client.onReceived((message) -> {
             YamlConfiguration command = new YamlConfiguration();
             try {
                 command.loadFromString(message);
             } catch (InvalidConfigurationException e) {
                 e.printStackTrace();
+            }
+            if(command.getString("cmd").equals("reload")) {
+                new Thread(() -> {
+                    System.out.println("Reload Executed remotely!");
+                    Bukkit.reload();
+                }).start();
             }
             if(command.getString("cmd").equals("stop")) {
                 System.out.println("Shutdown Executed remotely!");
@@ -87,6 +106,14 @@ public class Plugin extends JavaPlugin {
             interruptedException.printStackTrace();
         }
 
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {client.send(yaml.saveToString()); }, 20L, 20L);
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
+            try {
+                client.send(yaml.saveToString());
+            } catch (Exception interruptedException) {
+                try {
+                    client.connect("localhost", 8894, 0);
+                } catch (InterruptedException e) {}
+            }
+        }, 20L, 20L);
     }
 }

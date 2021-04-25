@@ -9,9 +9,9 @@ public class HtmlBuilder {
     private ThreadSafeList<String> javascripts = new ThreadSafeList();
     private String head = "";
     private String body = "";
-    private String htmlStyle = "";
-    private String headStyle = "";
-    private String bodyStyle = "";
+    public String htmlStyle = "";
+    public String headStyle = "";
+    public String bodyStyle = "";
     private String libraries = "";
     public String build() {
         StringBuilder html = new StringBuilder();
@@ -21,6 +21,11 @@ public class HtmlBuilder {
         html.append("<head style=\"" + headStyle + "\">");
         html.append(libraries);
         html.append(head);
+        html.append("<style>");
+        for(String style : styles) {
+            html.append(style);
+        }
+        html.append("</style>");
         html.append("</head>");
 
         html.append("<body style=\"" + bodyStyle + "\">");
@@ -64,10 +69,10 @@ public class HtmlBuilder {
         return "<button onclick=\"onClick" + jsBtnNum + name + "();\">" + displayText + "</button>";
     }
 
-    public String getJSButton(String name, String displayText, String javascript) {
+    public String getJSButton(String c, String name, String displayText, String javascript) {
         jsBtnNum++;
         name = name.replace(" ", "").trim();
-        return "<button onclick='" + javascript + "'>" + displayText + "</button>";
+        return "<button class=\"" + c + "\" onclick='" + javascript + "'>" + displayText + "</button>";
     }
 
     int jsBtnNum = 0;

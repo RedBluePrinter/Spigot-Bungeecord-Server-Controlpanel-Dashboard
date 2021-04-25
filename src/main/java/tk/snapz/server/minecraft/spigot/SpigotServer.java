@@ -71,6 +71,21 @@ public class SpigotServer {
         if (isTerminated()) {
             return false;
         }
+        for (SpigotServer s : SpigotServers.servers) {
+            for (SpigotServer a : SpigotServers.servers) {
+                if(s.identifier.equals(a.identifier)) {
+                    if(s.isOnline()) {
+                        if(!a.isOnline()) {
+                            a.terminate();
+                        }
+                    } else {
+                        if(a.isOnline()) {
+                            s.terminate();
+                        }
+                    }
+                }
+            }
+        }
         return true;
     }
 }
